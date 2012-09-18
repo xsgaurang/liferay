@@ -1,6 +1,7 @@
 package com.test;
 
 import com.liferay.portal.kernel.util.MethodKey;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalClassInvoker;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.theme.ThemeDisplay;
@@ -22,18 +23,17 @@ public class CustomLogin extends MVCPortlet {
  
 	public void Login(ActionRequest actionRequest,
 			ActionResponse actionResponse) throws IOException, PortletException {
-System.out.println("login called");
-MethodKey key = new MethodKey("com.liferay.portlet.login.util.LoginUtil", "login", HttpServletRequest.class, HttpServletResponse.class, String.class, String.class, boolean.class, String.class);
-try {
-	PortalClassInvoker.invoke(false, key, new Object[] { PortalUtil.getHttpServletRequest(actionRequest), PortalUtil.getHttpServletResponse(actionResponse), "test@liferay.com", "t", false, null});
+		try {
+			String username = ParamUtil.getString(actionRequest, "username");
+			String password = ParamUtil.getString(actionRequest, "password");
+			MethodKey key = new MethodKey("com.liferay.portlet.login.util.LoginUtil", "login", HttpServletRequest.class, HttpServletResponse.class, String.class, String.class, boolean.class, String.class);
+	PortalClassInvoker.invoke(false, key, new Object[] { PortalUtil.getHttpServletRequest(actionRequest), PortalUtil.getHttpServletResponse(actionResponse), username, password, false, null});
 } catch (Exception e) {
-	// TODO Auto-generated catch block
 	e.printStackTrace();
 }
 ThemeDisplay themeDisplay  = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
 actionResponse.sendRedirect(themeDisplay.getPathMain());
-		//super.processAction(actionRequest, actionResponse);
 	}
 
 }
